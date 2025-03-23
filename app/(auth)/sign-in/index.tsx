@@ -79,8 +79,8 @@ export default function Page() {
       }}
     >
       <Image
-        source={require('@/assets/images/musical.png')}
-        defaultSource={require('@/assets/images/musical.png')}
+        source={require('@/assets/images/tools.png')}
+        defaultSource={require('@/assets/images/tools.png')}
         style={{
           width: 100,
           height: 100,
