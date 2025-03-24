@@ -11,21 +11,27 @@ export default function ProtectedLayout() {
 
   return (
     <Tabs screenOptions={{ headerShown: false }}>
-      <Tabs.Screen name="(home)/index" options={{
+      <Tabs.Screen
+        name="(home)/index"
+        options={{
           title: 'Início',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
         }}
       />
-      <Tabs.Screen name="(newRequest)/index" options={{
+      <Tabs.Screen
+        name="(newRequest)/index"
+        options={{
           title: 'Novo Pedido',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-circle-outline" color={color} size={size} />
+            <Ionicons name="add-circle" color={color} size={size} />
           ),
         }}
       />
-      <Tabs.Screen name="(profile)/index" options={{
+      <Tabs.Screen
+        name="(profile)/index"
+        options={{
           title: 'Perfil',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />

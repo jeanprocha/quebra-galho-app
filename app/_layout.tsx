@@ -16,6 +16,10 @@ const tokenCache = {
 
 const publicKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
 
+export const unstable_settings = {
+  initialRouteName: '/',
+};
+
 const theme = {
   ...DefaultTheme,
   colors: {
