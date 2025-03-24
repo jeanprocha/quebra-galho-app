@@ -10,7 +10,7 @@ export default function ProtectedLayout() {
   if (!isSignedIn) return <Redirect href="/sign-in" />;
 
   return (
-    <Tabs>
+    <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="(home)/index" options={{
           title: 'Início',
           tabBarIcon: ({ color, size }) => (

@@ -1,14 +1,9 @@
+// app/sign-up.tsx
 import { useSignUp } from '@clerk/clerk-expo';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import {
-  Alert,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { View, Image, Alert } from 'react-native';
+import { TextInput, Button, Text } from 'react-native-paper';
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -20,15 +15,10 @@ export default function SignUpScreen() {
   const [code, setCode] = useState('');
 
   const onSignUpPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
+    if (!isLoaded) return;
 
     try {
-      await signUp.create({
-        emailAddress,
-        password,
-      });
+      await signUp.create({ emailAddress, password });
 
       await signUp.prepareEmailAddressVerification({
         strategy: 'email_code',
@@ -36,194 +26,81 @@ export default function SignUpScreen() {
 
       setPendingVerification(true);
     } catch (err: any) {
-      if (err.errors[0].code == 'form_identifier_exists') {
+      const code = err?.errors?.[0]?.code;
+      if (code === 'form_identifier_exists') {
         Alert.alert('Erro', 'Usuário já existe');
-      }
-      if (err.errors[0].code == 'form_password_pwned') {
-        Alert.alert('Erro', 'Senha não aceita, insira uma senha mais forte');
+      } else if (code === 'form_password_pwned') {
+        Alert.alert('Erro', 'Senha fraca, use uma mais forte');
+      } else {
+        Alert.alert('Erro', 'Não foi possível criar sua conta');
       }
     }
   };
 
   const onPressVerify = async () => {
-    if (!isLoaded) {
-      return;
-    }
+    if (!isLoaded) return;
 
     try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code,
-      });
-      if (completeSignUp.status == 'complete') {
-        await setActive!({
-          session: completeSignUp.createdSessionId,
-        });
+      const completeSignUp = await signUp.attemptEmailAddressVerification({ code });
+
+      if (completeSignUp.status === 'complete') {
+        await setActive!({ session: completeSignUp.createdSessionId });
         router.replace('/');
       } else {
-        console.log(JSON.stringify(completeSignUp, null, 2));
+        console.log('Verificação incompleta:', completeSignUp.status);
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
+      Alert.alert('Erro', 'Código inválido ou expirado');
     }
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#222',
-      }}
-    >
+    <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
       <Image
         source={require('@/assets/images/tools.png')}
-        defaultSource={require('@/assets/images/tools.png')}
-        style={{
-          width: 100,
-          height: 100,
-          marginBottom: 10,
-        }}
+        style={{ width: 100, height: 100, alignSelf: 'center', marginBottom: 20 }}
       />
-      {!pendingVerification && (
+      {!pendingVerification ? (
         <>
-          <Text
-            style={{
-              color: '#fff',
-              marginBottom: 20,
-              fontWeight: 'bold',
-              fontSize: 20,
-            }}
-          >
-            Crie uma Conta
+          <Text variant="titleLarge" style={{ textAlign: 'center', marginBottom: 20 }}>
+            Crie sua conta
           </Text>
           <TextInput
-            autoCapitalize='none'
+            label="Email"
             value={emailAddress}
-            placeholder='Seu Email'
-            placeholderTextColor={'#ddd'}
-            style={{
-              borderWidth: 1,
-              borderColor: '#eee',
-              width: 300,
-              height: 40,
-              borderRadius: 10,
-              paddingLeft: 8,
-            }}
-            onChangeText={(email) => setEmailAddress(email)}
+            onChangeText={setEmailAddress}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            style={{ marginBottom: 10 }}
           />
           <TextInput
+            label="Senha"
             value={password}
-            placeholder='Sua Senha'
-            placeholderTextColor={'#ddd'}
-            style={{
-              borderWidth: 1,
-              borderColor: '#eee',
-              width: 300,
-              height: 40,
-              borderRadius: 10,
-              paddingLeft: 8,
-              marginTop: 20,
-            }}
-            secureTextEntry={true}
-            onChangeText={(password) => setPassword(password)}
+            onChangeText={setPassword}
+            secureTextEntry
+            style={{ marginBottom: 10 }}
           />
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#701ff2',
-              width: 200,
-              height: 40,
-              marginTop: 10,
-              borderRadius: 10,
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onPress={onSignUpPress}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#fff',
-              }}
-            >
-              Cadastrar
-            </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              marginTop: 20,
-            }}
-          >
-            <Text
-              style={{
-                fontWeight: 'bold',
-                color: '#eee',
-              }}
-            >
-              Já possui conta?
-            </Text>
-            <Link
-              style={{
-                color: '#7e40e3',
-              }}
-              href='/sign-in'
-            >
-              <Text>Entre agora</Text>
-            </Link>
-          </View>
+          <Button mode="contained" onPress={onSignUpPress} style={{ marginBottom: 10 }}>
+            Cadastrar
+          </Button>
+          <Button onPress={() => router.push('/sign-in')}>Já possui conta? Entrar</Button>
         </>
-      )}
-      {pendingVerification && (
+      ) : (
         <>
-          <Text
-            style={{
-              color: '#fff',
-              marginBottom: 20,
-              fontWeight: 'bold',
-              fontSize: 20,
-            }}
-          >
-            Verifique Sua Conta
+          <Text variant="titleLarge" style={{ textAlign: 'center', marginBottom: 20 }}>
+            Verifique seu email
           </Text>
           <TextInput
+            label="Código de verificação"
             value={code}
-            placeholder='Código de confirmação'
-            placeholderTextColor={'#ddd'}
-            style={{
-              borderWidth: 1,
-              borderColor: '#eee',
-              width: 300,
-              height: 40,
-              borderRadius: 10,
-              paddingLeft: 8,
-              marginTop: 20,
-            }}
-            onChangeText={(code) => setCode(code)}
+            onChangeText={setCode}
+            keyboardType="number-pad"
+            style={{ marginBottom: 10 }}
           />
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#701ff2',
-              width: 200,
-              height: 40,
-              marginTop: 10,
-              borderRadius: 10,
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onPress={onPressVerify}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#fff',
-              }}
-            >
-              Verificar código
-            </Text>
-          </TouchableOpacity>
+          <Button mode="contained" onPress={onPressVerify}>
+            Verificar código
+          </Button>
         </>
       )}
     </View>

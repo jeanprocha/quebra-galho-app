@@ -20,9 +20,9 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#4CAF50',
-    text: '#212121',
-    background: '#F5F5F5',
+    primary: '#701ff2',
+    background: '#f2f2f2',
+    text: '#222',
   },
 };
 
