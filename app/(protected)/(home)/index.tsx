@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { Text, Card, Button } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { requests } from './mockRequest';
+import { requests } from '../../../constants/mockRequest';
 
 const categoriaEstilos: Record<
   string,

@@ -40,7 +40,7 @@ export default function SignInScreen() {
   const onSignInWithGoogle = useCallback(async () => {
     try {
       const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL('/', { scheme: 'quebragalho' }),
+        redirectUrl: 'com.jeanprocha.quebragalhoapp:/oauth/callback',
       });
 
       if (createdSessionId) {

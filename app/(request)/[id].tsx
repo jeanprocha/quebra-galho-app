@@ -9,7 +9,7 @@ import {
 import { Text, Title, Button, Divider, Card } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
-import { requests } from '../(protected)/(home)/mockRequest';
+import { requests } from '../../constants/mockRequest';
 
 const categoriaEstilos: Record<
   string,
